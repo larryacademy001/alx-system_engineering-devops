@@ -1,0 +1,2 @@
+#!/bin/bash
+ls -Ap | LC_ALL=C sort -d -k1.1,1.1 | tr '\n' ',' | sed 's/,$/\n/'
