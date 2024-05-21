@@ -1,8 +1,5 @@
 #!/usr/bin/python3
-'''
-Get Employee Data from API
-'''
-
+"""Get Employee data from API."""
 import re
 import requests
 import sys
@@ -13,18 +10,18 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         if re.fullmatch(r'\d+', sys.argv[1]):
             id = int(sys.argv[1])
-            user_req = requests.get('{}/users/{}'.format(REST_API, id)).json()
+            req = requests.get('{}/users/{}'.format(REST_API, id)).json()
             task_req = requests.get('{}/todos'.format(REST_API)).json()
-            employee_name = user_req.get('name')
-            all_tasks = list(filter(lambda x: x.get('userId') == id, task_req))
-            tasks_done = list(filter(lambda x: x.get('completed'), all_tasks))
+            emp_name = req.get('name')
+            tasks = list(filter(lambda x: x.get('userId') == id, task_req))
+            completed_tasks = list(filter(lambda x: x.get('completed'), tasks))
             print(
                 'Employee {} is done with tasks({}/{}):'.format(
-                    employee_name,
-                    len(tasks_done),
-                    len(all_tasks)
+                    emp_name,
+                    len(completed_tasks),
+                    len(tasks)
                 )
             )
-            if len(tasks_done) > 0:
-                for task in tasks_done:
+            if len(completed_tasks) > 0:
+                for task in completed_tasks:
                     print('\t {}'.format(task.get('title')))
