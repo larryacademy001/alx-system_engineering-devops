@@ -1,24 +1,38 @@
 #!/usr/bin/python3
-"""Export api to csv"""
+"""
+Using what you did in the task #0, extend your Python
+script to export data in the CSV format.
+"""
+
 import csv
+import json
 import requests
-import sys
+from sys import argv
 
-if __name__ == '__main__':
-    USER_ID = sys.argv[1]
-    endpoint_url = 'https://jsonplaceholder.typicode.com/users/' + USER_ID
-    res = requests.get(endpoint_url)
-    """GET DATA"""
-    user_name = res.json().get('username')
-    todo_tasks = endpoint_url + '/todos'
-    res = requests.get(todo_tasks)
-    all_todo_tasks = res.json()
 
-    with open('{}.csv'.format(USER_ID), 'w') as csvfile:
-        for todo_tasks in all_todo_tasks:
-            completed_status = todo_tasks.get('completed')
-            """Complete"""
-            task_title = todo_tasks.get('title')
-            """Done"""
-            csvfile.write('"{}","{}","{}","{}"\n'.format(
-                USER_ID, user_name, completed_status, task_title))
+if __name__ == "__main__":
+
+    sessionReq = requests.Session()
+
+    EmpID = argv[1]
+    tasks = 'https://jsonplaceholder.typicode.com/users/{}/todos'.format(EmpID)
+    empDATA = 'https://jsonplaceholder.typicode.com/users/{}'.format(EmpID)
+
+    employee = sessionReq.get(tasks)
+    employeeName = sessionReq.get(empDATA)
+
+    json_req = employee.json()
+    usr = employeeName.json()['username']
+
+    totalTasks = 0
+
+    for done_tasks in json_req:
+        if done_tasks['completed']:
+            totalTasks += 1
+
+    fileCSV = EmpID + '.csv'
+
+    with open(fileCSV, "w", newline='') as csvfile:
+        write = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_ALL)
+        for i in json_req:
+            write.writerow([EmpID, usr, i.get('completed'), i.get('title')])

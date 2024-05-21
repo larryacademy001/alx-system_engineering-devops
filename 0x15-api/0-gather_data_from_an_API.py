@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """
-A Script that, uses this REST API, for a given employee ID, returns
-information about his/her TODO list progress
+Python script that, using this REST API, for a given
+employee ID, returns information about his/her TODO list progress.
 """
 
 import json
@@ -13,15 +13,15 @@ if __name__ == "__main__":
 
     sessionReq = requests.Session()
 
-    idEmp = argv[1]
-    idURL = 'https://jsonplaceholder.typicode.com/users/{}/todos'.format(idEmp)
-    nameURL = 'https://jsonplaceholder.typicode.com/users/{}'.format(idEmp)
+    EmpID = argv[1]
+    tasks = 'https://jsonplaceholder.typicode.com/users/{}/todos'.format(EmpID)
+    empDATA = 'https://jsonplaceholder.typicode.com/users/{}'.format(EmpID)
 
-    employee = sessionReq.get(idURL)
-    employeeName = sessionReq.get(nameURL)
+    employee = sessionReq.get(tasks)
+    employeeName = sessionReq.get(empDATA)
 
     json_req = employee.json()
-    name = employeeName.json()['name']
+    emp_name = employeeName.json()['name']
 
     totalTasks = 0
 
@@ -30,7 +30,7 @@ if __name__ == "__main__":
             totalTasks += 1
 
     print("Employee {} is done with tasks({}/{}):".
-          format(name, totalTasks, len(json_req)))
+          format(emp_name, totalTasks, len(json_req)))
 
     for done_tasks in json_req:
         if done_tasks['completed']:

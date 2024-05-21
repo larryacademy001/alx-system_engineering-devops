@@ -1,30 +1,40 @@
 #!/usr/bin/python3
-"""Get data from an API and convert to Json"""
-import csv
+"""
+Using what you did in the task #0, extend your Python
+script to export data in the JSON format.
+"""
+
 import json
 import requests
-import sys
+from sys import argv
 
 
-if __name__ == '__main__':
-    USER_ID = sys.argv[1]
-    endpoint_url = 'https://jsonplaceholder.typicode.com/users/' + USER_ID
-    res = requests.get(endpoint_url)
-    """Documentation"""
-    USERNAME = res.json().get('username')
-    """Documentation"""
-    todo_tasks = endpoint_url + '/todos'
-    res = requests.get(todo_tasks)
-    all_todo_tasks = res.json()
+if __name__ == "__main__":
 
-    dict_data = {USER_ID: []}
-    for task in all_todo_tasks:
-        TASK_COMPLETED_STATUS = task.get('completed')
-        TASK_TITLE = task.get('title')
-        dict_data[USER_ID].append({
-                                  "task": TASK_TITLE,
-                                  "completed": TASK_COMPLETED_STATUS,
-                                  "username": USERNAME})
-    """print(dict_data)"""
-    with open('{}.json'.format(USER_ID), 'w') as f:
-        json.dump(dict_data, f)
+    sessionReq = requests.Session()
+
+    EmpID = argv[1]
+    tasks = 'https://jsonplaceholder.typicode.com/users/{}/todos'.format(EmpID)
+    empDATA = 'https://jsonplaceholder.typicode.com/users/{}'.format(EmpID)
+
+    employee = sessionReq.get(tasks)
+    employeeName = sessionReq.get(empDATA)
+
+    json_req = employee.json()
+    user_name = employeeName.json()['username']
+
+    totalTasks = []
+    updateUser = {}
+
+    for all_Emp in json_req:
+        totalTasks.append(
+            {
+                "task": all_Emp.get('title'),
+                "completed": all_Emp.get('completed'),
+                "username": user_name,
+            })
+    updateUser[EmpID] = totalTasks
+
+    file_Json = EmpID + ".json"
+    with open(file_Json, 'w') as f:
+        json.dump(updateUser, f)
